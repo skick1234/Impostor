@@ -12,7 +12,7 @@ namespace Impostor.Server.Net.State
 {
     internal partial class Game : IGame
     {
-        IClientPlayer IGame.Host => Host;
+        IClientPlayer? IGame.Host => Host;
 
         IGameNet IGame.GameNet => GameNet;
 
@@ -23,7 +23,7 @@ namespace Impostor.Server.Net.State
 
         public async ValueTask SyncSettingsAsync()
         {
-            if (Host.Character == null)
+            if (Host?.Character == null)
             {
                 throw new ImpostorException("Attempted to set infected when the host was not spawned.");
             }

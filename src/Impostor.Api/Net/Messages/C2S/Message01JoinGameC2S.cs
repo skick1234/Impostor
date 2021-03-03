@@ -11,7 +11,7 @@ namespace Impostor.Api.Net.Messages.C2S
 
         public static void Deserialize(IMessageReader reader, out int gameCode, out byte unknown)
         {
-            var slice = reader.ReadBytes(sizeof(Int32) + sizeof(byte)).Span;
+            var slice = reader.ReadBytes(sizeof(int) + sizeof(byte)).Span;
 
             gameCode = slice.ReadInt32();
             unknown = slice.ReadByte();

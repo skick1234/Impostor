@@ -7,8 +7,8 @@
         ImpostorByVote = 2,
         ImpostorByKill = 3,
         ImpostorBySabotage = 4,
-        
-        // Unused (?)
+
+        // Unused
         ImpostorDisconnect = 5,
         HumansDisconnect = 6,
     }

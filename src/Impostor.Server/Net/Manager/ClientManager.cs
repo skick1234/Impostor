@@ -18,15 +18,6 @@ namespace Impostor.Server.Net.Manager
 {
     internal partial class ClientManager
     {
-        private static HashSet<int> SupportedVersions { get; } = new HashSet<int>
-        {
-            GameVersion.GetVersion(2020, 09, 07), // 2020.09.07 - 2020.09.22
-            GameVersion.GetVersion(2020, 10, 08), // 2020.10.08
-            GameVersion.GetVersion(2020, 11, 17), // 2020.11.17
-        };
-
-        private static string ServerBrand { get; } = $"Impostor {DotnetUtils.GetVersion()}";
-
         private readonly ILogger<ClientManager> _logger;
         private readonly ConcurrentDictionary<int, ClientBase> _clients;
         private readonly IClientFactory _clientFactory;
@@ -40,6 +31,15 @@ namespace Impostor.Server.Net.Manager
         }
 
         public IEnumerable<ClientBase> Clients => _clients.Values;
+
+        private static HashSet<int> SupportedVersions { get; } = new HashSet<int>
+        {
+            GameVersion.GetVersion(2020, 09, 07), // 2020.09.07 - 2020.09.22
+            GameVersion.GetVersion(2020, 10, 08), // 2020.10.08
+            GameVersion.GetVersion(2020, 11, 17), // 2020.11.17
+        };
+
+        private static string ServerBrand { get; } = $"Impostor {DotnetUtils.GetVersion()}";
 
         public int NextId()
         {

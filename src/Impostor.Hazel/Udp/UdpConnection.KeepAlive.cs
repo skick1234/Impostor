@@ -109,9 +109,9 @@ namespace Impostor.Hazel.Udp
         // pings should cause a disconnect.
         private async ValueTask SendPing()
         {
-            ushort id = (ushort)Interlocked.Increment(ref lastIDAllocated);
+            var id = (ushort)Interlocked.Increment(ref lastIDAllocated);
 
-            byte[] bytes = new byte[3];
+            var bytes = new byte[3];
             bytes[0] = (byte)UdpSendOption.Ping;
             bytes[1] = (byte)(id >> 8);
             bytes[2] = (byte)id;

@@ -40,7 +40,6 @@ namespace Impostor.Server.Net.Inner
             var id = reader.ReadPackedInt32();
 
             // TODO handle custom rpcs
-
             return ValueTask.FromResult(true);
         }
     }

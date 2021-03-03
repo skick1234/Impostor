@@ -72,7 +72,7 @@ namespace Impostor.Tests.Hazel
         public void ReadProperString()
         {
             const string Test1 = "Hello";
-            string Test2 = new string(' ', 1024);
+            var Test2 = new string(' ', 1024);
             var msg = new MessageWriter(2048);
             msg.StartMessage(1);
             msg.Write(Test1);

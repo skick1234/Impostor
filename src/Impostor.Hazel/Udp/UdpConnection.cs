@@ -119,7 +119,7 @@ namespace Impostor.Hazel.Udp
             if (this._state != ConnectionState.Connected)
                 throw new InvalidOperationException("Could not send data as this Connection is not connected. Did you disconnect?");
 
-            byte[] buffer = new byte[msg.Length];
+            var buffer = new byte[msg.Length];
             Buffer.BlockCopy(msg.Buffer, 0, buffer, 0, msg.Length);
 
             switch (msg.SendOption)
@@ -258,7 +258,7 @@ namespace Impostor.Hazel.Udp
         /// <param name="length"></param>
         async ValueTask UnreliableSend(byte sendOption, byte[] data, int offset, int length)
         {
-            byte[] bytes = new byte[length + 1];
+            var bytes = new byte[length + 1];
 
             //Add message type
             bytes[0] = sendOption;

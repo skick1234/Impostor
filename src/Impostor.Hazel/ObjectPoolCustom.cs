@@ -48,7 +48,7 @@ namespace Impostor.Hazel
         internal T GetObject()
         {
 #if HAZEL_BAG
-            if (!pool.TryTake(out T item))
+            if (!pool.TryTake(out var item))
             {
                 Interlocked.Increment(ref numberCreated);
                 item = objectFactory.Invoke();
@@ -85,7 +85,7 @@ namespace Impostor.Hazel
         /// <param name="item">The item to return.</param>
         internal void PutObject(T item)
         {
-            if (inuse.TryRemove(item, out bool b))
+            if (inuse.TryRemove(item, out var b))
             {
 #if HAZEL_BAG
                 pool.Add(item);

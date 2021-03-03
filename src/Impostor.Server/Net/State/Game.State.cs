@@ -67,7 +67,7 @@ namespace Impostor.Server.Net.State
                 await MigrateHost();
             }
 
-            if (isBan && player.Client.Connection != null)
+            if (isBan)
             {
                 BanIp(player.Client.Connection.EndPoint.Address);
             }

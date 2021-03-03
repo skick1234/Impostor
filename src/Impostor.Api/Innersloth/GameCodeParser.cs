@@ -9,7 +9,8 @@ namespace Impostor.Api.Innersloth
     public static class GameCodeParser
     {
         private const string V2 = "QWXRTYLPESDFGHUJKZOCVBINMA";
-        private static readonly int[] V2Map = {
+        private static readonly int[] V2Map =
+        {
             25,
             21,
             19,
@@ -35,10 +36,11 @@ namespace Impostor.Api.Innersloth
             1,
             2,
             5,
-            17
+            17,
         };
+
         private static readonly RNGCryptoServiceProvider Random = new RNGCryptoServiceProvider();
-        
+
         public static string IntToGameName(int input)
         {
             // V2.
@@ -57,22 +59,6 @@ namespace Impostor.Api.Innersloth
 #endif
         }
 
-        private static string IntToGameNameV2(int input)
-        {
-            var a = input & 0x3FF;
-            var b = (input >> 10) & 0xFFFFF;
-
-            return new string(new []
-            {
-                V2[a % 26],
-                V2[a / 26],
-                V2[b % 26],
-                V2[b / 26 % 26],
-                V2[b / (26 * 26) % 26],
-                V2[b / (26 * 26 * 26) % 26]
-            });
-        }
-
         public static int GameNameToInt(string code)
         {
             var upper = code.ToUpperInvariant();
@@ -80,7 +66,7 @@ namespace Impostor.Api.Innersloth
             {
                 return -1;
             }
-            
+
             var len = code.Length;
             if (len == 6)
             {
@@ -91,23 +77,8 @@ namespace Impostor.Api.Innersloth
             {
                 return code[0] | ((code[1] | ((code[2] | (code[3] << 8)) << 8)) << 8);
             }
-            
+
             return -1;
-        }
-        
-        private static int GameNameToIntV2(string code)
-        {
-            var a = V2Map[code[0] - 65];
-            var b = V2Map[code[1] - 65];
-            var c = V2Map[code[2] - 65];
-            var d = V2Map[code[3] - 65];
-            var e = V2Map[code[4] - 65];
-            var f = V2Map[code[5] - 65];
-
-            var one = (a + 26 * b) & 0x3FF;
-            var two = (c + 26 * (d + 26 * (e + 26 * f)));
-
-            return (int) (one | ((two << 10) & 0x3FFFFC00) | 0x80000000);
         }
 
         public static int GenerateCode(int len)
@@ -116,7 +87,7 @@ namespace Impostor.Api.Innersloth
             {
                 throw new ArgumentException("should be 4 or 6", nameof(len));
             }
-            
+
             // Generate random bytes.
 #if NETSTANDARD2_0
             var data = new byte[len];
@@ -124,7 +95,7 @@ namespace Impostor.Api.Innersloth
             Span<byte> data = stackalloc byte[len];
 #endif
             Random.GetBytes(data);
-            
+
             // Convert to their char representation.
             Span<char> dataChar = stackalloc char[len];
             for (var i = 0; i < len; i++)
@@ -137,6 +108,37 @@ namespace Impostor.Api.Innersloth
 #else
             return GameNameToInt(new string(dataChar));
 #endif
+        }
+
+        private static string IntToGameNameV2(int input)
+        {
+            var a = input & 0x3FF;
+            var b = (input >> 10) & 0xFFFFF;
+
+            return new string(new[]
+            {
+                V2[a % 26],
+                V2[a / 26],
+                V2[b % 26],
+                V2[(b / 26) % 26],
+                V2[(b / (26 * 26)) % 26],
+                V2[(b / (26 * 26 * 26)) % 26],
+            });
+        }
+
+        private static int GameNameToIntV2(string code)
+        {
+            var a = V2Map[code[0] - 65];
+            var b = V2Map[code[1] - 65];
+            var c = V2Map[code[2] - 65];
+            var d = V2Map[code[3] - 65];
+            var e = V2Map[code[4] - 65];
+            var f = V2Map[code[5] - 65];
+
+            var one = (a + (26 * b)) & 0x3FF;
+            var two = c + (26 * (d + (26 * (e + (26 * f)))));
+
+            return (int)(one | ((two << 10) & 0x3FFFFC00) | 0x80000000);
         }
     }
 }

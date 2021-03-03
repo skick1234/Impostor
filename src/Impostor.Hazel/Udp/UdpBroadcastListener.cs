@@ -96,14 +96,14 @@ namespace Impostor.Hazel.Udp
                 return;
             }
 
-            IPEndPoint ipEnd = (IPEndPoint)endpt;
-            string data = UTF8Encoding.UTF8.GetString(buffer, 2, numBytes - 2);
-            int dataHash = data.GetHashCode();
+            var ipEnd = (IPEndPoint)endpt;
+            var data = UTF8Encoding.UTF8.GetString(buffer, 2, numBytes - 2);
+            var dataHash = data.GetHashCode();
 
             lock (packets)
             {
-                bool found = false;
-                for (int i = 0; i < this.packets.Count; ++i)
+                var found = false;
+                for (var i = 0; i < this.packets.Count; ++i)
                 {
                     var pkt = this.packets[i];
                     if (pkt == null || pkt.Data == null)

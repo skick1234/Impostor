@@ -78,7 +78,7 @@ namespace Impostor.Hazel
 
         public bool ReadBoolean()
         {
-            byte val = FastByte();
+            var val = FastByte();
             return val != 0;
         }
 
@@ -159,13 +159,13 @@ namespace Impostor.Hazel
 
         public uint ReadPackedUInt32()
         {
-            bool readMore = true;
-            int shift = 0;
+            var readMore = true;
+            var shift = 0;
             uint output = 0;
 
             while (readMore)
             {
-                byte b = FastByte();
+                var b = FastByte();
                 if (b >= 0x80)
                 {
                     readMore = true;

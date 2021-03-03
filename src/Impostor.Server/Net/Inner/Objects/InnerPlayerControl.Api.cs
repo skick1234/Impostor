@@ -104,7 +104,7 @@ namespace Impostor.Server.Net.Inner.Objects
             Rpc12MurderPlayer.Serialize(writer, target);
             await _game.FinishRpcAsync(writer);
 
-            await _eventManager.CallAsync(new PlayerMurderEvent(_game, _game.GetClientPlayer(OwnerId), this, target));
+            await _eventManager.CallAsync(new PlayerMurderEvent(_game, _game.GetClientPlayer(OwnerId)!, this, target));
         }
     }
 }

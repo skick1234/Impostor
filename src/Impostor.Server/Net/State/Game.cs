@@ -64,8 +64,6 @@ namespace Impostor.Server.Net.State
 
         public GameStates GameState { get; private set; }
 
-        internal GameNet GameNet { get; }
-
         public GameOptionsData Options { get; }
 
         public IDictionary<object, object> Items { get; }
@@ -76,6 +74,8 @@ namespace Impostor.Server.Net.State
 
         public IEnumerable<IClientPlayer> Players => _players.Select(p => p.Value);
 
+        internal GameNet GameNet { get; }
+
         public bool TryGetPlayer(int id, out ClientPlayer player)
         {
             if (_players.TryGetValue(id, out var result))
@@ -84,13 +84,18 @@ namespace Impostor.Server.Net.State
                 return true;
             }
 
-            player = default;
+            player = default!;
             return false;
         }
 
-        public IClientPlayer GetClientPlayer(int clientId)
+        public IClientPlayer? GetClientPlayer(int clientId)
         {
             return _players.TryGetValue(clientId, out var clientPlayer) ? clientPlayer : null;
+        }
+
+        public ValueTask EndAsync()
+        {
+            return _gameManager.RemoveAsync(Code);
         }
 
         internal async ValueTask StartedAsync()
@@ -109,11 +114,6 @@ namespace Impostor.Server.Net.State
             }
         }
 
-        public ValueTask EndAsync()
-        {
-            return _gameManager.RemoveAsync(Code);
-        }
-
         private ValueTask BroadcastJoinMessage(IMessageWriter message, bool clear, ClientPlayer player)
         {
             Message01JoinGameS2C.SerializeJoin(message, clear, Code, player.Client.Id, HostId);
@@ -125,7 +125,7 @@ namespace Impostor.Server.Net.State
         {
             return Players
                 .Where(filter)
-                .Select(p => p.Client.Connection);
+                .Select(p => p.Client.Connection)!;
         }
     }
 }

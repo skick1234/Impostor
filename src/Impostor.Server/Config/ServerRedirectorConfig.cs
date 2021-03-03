@@ -10,15 +10,15 @@ namespace Impostor.Server.Config
 
         public bool Master { get; set; }
 
-        public NodeLocator Locator { get; set; }
+        public NodeLocator Locator { get; set; } = null!;
 
-        public List<ServerRedirectorNode> Nodes { get; set; }
+        public List<ServerRedirectorNode> Nodes { get; set; } = new List<ServerRedirectorNode>();
 
         public class NodeLocator
         {
-            public string Redis { get; set; }
+            public string Redis { get; set; } = null!;
 
-            public string UdpMasterEndpoint { get; set; }
+            public string UdpMasterEndpoint { get; set; } = null!;
         }
     }
 }

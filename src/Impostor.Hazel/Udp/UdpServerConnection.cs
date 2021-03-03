@@ -63,7 +63,7 @@ namespace Impostor.Hazel.Udp
                 if (this._state != ConnectionState.Connected) return false;
                 this._state = ConnectionState.NotConnected;
             }
-            
+
             var bytes = EmptyDisconnectBytes;
             if (data != null && data.Length > 0)
             {
@@ -88,7 +88,7 @@ namespace Impostor.Hazel.Udp
 
             if (disposing)
             {
-                SendDisconnect();
+                _ = SendDisconnect();
             }
 
             base.Dispose(disposing);

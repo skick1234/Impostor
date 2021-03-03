@@ -24,7 +24,7 @@ namespace Impostor.Api.Games
 
         int PlayerCount { get; }
 
-        IClientPlayer Host { get; }
+        IClientPlayer? Host { get; }
 
         bool IsPublic { get; }
 
@@ -32,7 +32,7 @@ namespace Impostor.Api.Games
 
         int HostId { get; }
 
-        IClientPlayer GetClientPlayer(int clientId);
+        IClientPlayer? GetClientPlayer(int clientId);
 
         T? FindObjectByNetId<T>(uint netId)
             where T : IInnerNetObject;

@@ -136,10 +136,10 @@ namespace Impostor.Hazel.Udp
                 var connection = this.Connection;
                 if (!this.Acknowledged && connection != null)
                 {
-                    long lifetime = this.Stopwatch.ElapsedMilliseconds;
+                    var lifetime = this.Stopwatch.ElapsedMilliseconds;
                     if (lifetime >= connection.DisconnectTimeout)
                     {
-                        if (connection.reliableDataPacketsSent.TryRemove(this.Id, out Packet self))
+                        if (connection.reliableDataPacketsSent.TryRemove(this.Id, out var self))
                         {
                             await connection.DisconnectInternal(HazelInternalErrors.ReliablePacketWithoutResponse, $"Reliable packet {self.Id} (size={this.Length}) was not ack'd after {lifetime}ms ({self.Retransmissions} resends)");
 
@@ -155,7 +155,7 @@ namespace Impostor.Hazel.Udp
                         if (connection.ResendLimit != 0
                             && this.Retransmissions > connection.ResendLimit)
                         {
-                            if (connection.reliableDataPacketsSent.TryRemove(this.Id, out Packet self))
+                            if (connection.reliableDataPacketsSent.TryRemove(this.Id, out var self))
                             {
                                 await connection.DisconnectInternal(HazelInternalErrors.ReliablePacketWithoutResponse, $"Reliable packet {self.Id} (size={this.Length}) was not ack'd after {self.Retransmissions} resends ({lifetime}ms)");
 
@@ -196,12 +196,12 @@ namespace Impostor.Hazel.Udp
 
         internal async ValueTask<int> ManageReliablePackets()
         {
-            int output = 0;
+            var output = 0;
             if (this.reliableDataPacketsSent.Count > 0)
             {
                 foreach (var kvp in this.reliableDataPacketsSent)
                 {
-                    Packet pkt = kvp.Value;
+                    var pkt = kvp.Value;
 
                     try
                     {
@@ -222,12 +222,12 @@ namespace Impostor.Hazel.Udp
         /// <param name="ackCallback">The callback to make once the packet has been acknowledged.</param>
         protected void AttachReliableID(byte[] buffer, int offset, int sendLength, Action ackCallback = null)
         {
-            ushort id = (ushort)Interlocked.Increment(ref lastIDAllocated);
+            var id = (ushort)Interlocked.Increment(ref lastIDAllocated);
 
             buffer[offset] = (byte)(id >> 8);
             buffer[offset + 1] = (byte)id;
 
-            Packet packet = Packet.GetObject();
+            var packet = Packet.GetObject();
             packet.Set(
                 id,
                 this,
@@ -260,7 +260,7 @@ namespace Impostor.Hazel.Udp
             //Inform keepalive not to send for a while
             ResetKeepAliveTimer();
 
-            byte[] bytes = new byte[data.Length + 3];
+            var bytes = new byte[data.Length + 3];
 
             //Add message type
             bytes[0] = sendOption;
@@ -339,7 +339,7 @@ namespace Impostor.Hazel.Udp
             lock (reliableDataPacketsMissing)
             {
                 //Calculate overwritePointer
-                ushort overwritePointer = (ushort)(reliableReceiveLast - 32768);
+                var overwritePointer = (ushort)(reliableReceiveLast - 32768);
 
                 //Calculate if it is a new packet by examining if it is within the range
                 bool isNew;
@@ -354,14 +354,14 @@ namespace Impostor.Hazel.Udp
                     // Mark items between the most recent receive and the id received as missing
                     if (id > reliableReceiveLast)
                     {
-                        for (ushort i = (ushort)(reliableReceiveLast + 1); i < id; i++)
+                        for (var i = (ushort)(reliableReceiveLast + 1); i < id; i++)
                         {
                             reliableDataPacketsMissing.Add(i);
                         }
                     }
                     else
                     {
-                        int cnt = (ushort.MaxValue - reliableReceiveLast) + id;
+                        var cnt = (ushort.MaxValue - reliableReceiveLast) + id;
                         for (ushort i = 1; i < cnt; ++i)
                         {
                             reliableDataPacketsMissing.Add((ushort)(i + reliableReceiveLast));
@@ -397,13 +397,13 @@ namespace Impostor.Hazel.Udp
         {
             this.pingsSinceAck = 0;
 
-            ushort id = (ushort)((bytes[1] << 8) + bytes[2]);
+            var id = (ushort)((bytes[1] << 8) + bytes[2]);
             AcknowledgeMessageId(id);
 
             if (bytes.Length == 4)
             {
-                byte recentPackets = bytes[3];
-                for (int i = 1; i <= 8; ++i)
+                var recentPackets = bytes[3];
+                for (var i = 1; i <= 8; ++i)
                 {
                     if ((recentPackets & 1) != 0)
                     {
@@ -420,7 +420,7 @@ namespace Impostor.Hazel.Udp
         private void AcknowledgeMessageId(ushort id)
         {
             // Dispose of timer and remove from dictionary
-            if (reliableDataPacketsSent.TryRemove(id, out Packet packet))
+            if (reliableDataPacketsSent.TryRemove(id, out var packet))
             {
                 float rt = packet.Stopwatch.ElapsedMilliseconds;
 
@@ -432,7 +432,7 @@ namespace Impostor.Hazel.Udp
                     this.AveragePingMs = Math.Max(50, this.AveragePingMs * .7f + rt * .3f);
                 }
             }
-            else if (this.activePingPackets.TryRemove(id, out PingPacket pingPkt))
+            else if (this.activePingPackets.TryRemove(id, out var pingPkt))
             {
                 float rt = pingPkt.Stopwatch.ElapsedMilliseconds;
 
@@ -455,7 +455,7 @@ namespace Impostor.Hazel.Udp
             byte recentPackets = 0;
             lock (this.reliableDataPacketsMissing)
             {
-                for (int i = 1; i <= 8; ++i)
+                for (var i = 1; i <= 8; ++i)
                 {
                     if (!this.reliableDataPacketsMissing.Contains((ushort)(id - i)))
                     {
@@ -464,7 +464,7 @@ namespace Impostor.Hazel.Udp
                 }
             }
 
-            byte[] bytes = new byte[]
+            var bytes = new byte[]
             {
                 (byte)UdpSendOption.Acknowledgement,
                 (byte)(id >> 8),

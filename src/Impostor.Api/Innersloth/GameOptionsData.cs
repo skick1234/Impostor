@@ -27,15 +27,15 @@ namespace Impostor.Api.Innersloth
         public GameKeywords Keywords { get; set; }
 
         /// <summary>
-        /// Gets or sets the MapId selected for this lobby
+        /// Gets or sets the MapId selected for this lobby.
         /// </summary>
         /// <remarks>
         /// Skeld = 0, MiraHQ = 1, Polus = 2.
         /// </remarks>
-        internal byte MapId { get; set; }
+        public byte MapId { get; set; }
 
         /// <summary>
-        /// Gets or sets the map selected for this lobby
+        /// Gets or sets the map selected for this lobby.
         /// </summary>
         public MapTypes Map
         {

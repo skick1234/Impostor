@@ -71,7 +71,7 @@ namespace Impostor.Server.Net
                     // Code in the packet below will be used in JoinGame.
                     using (var writer = MessageWriter.Get(MessageType.Reliable))
                     {
-                        Message00HostGameS2C.Serialize(writer, game.Code);
+                        Message00HostGameS2C.Serialize(writer, game!.Code);
                         await Connection.SendAsync(writer);
                     }
 
@@ -134,7 +134,7 @@ namespace Impostor.Server.Net
                         return;
                     }
 
-                    await Player.Game.HandleStartGame(reader);
+                    await Player!.Game.HandleStartGame(reader);
                     break;
                 }
 
@@ -154,7 +154,7 @@ namespace Impostor.Server.Net
                         out var playerId,
                         out var reason);
 
-                    await Player.Game.HandleRemovePlayer(playerId, (DisconnectReason)reason);
+                    await Player!.Game.HandleRemovePlayer(playerId, (DisconnectReason)reason);
                     break;
                 }
 
@@ -171,7 +171,7 @@ namespace Impostor.Server.Net
                     // Handle packet.
                     using var readerCopy = reader.Copy();
 
-                    var verified = await Player.Game.HandleGameDataAsync(readerCopy, Player, toPlayer);
+                    var verified = await Player!.Game.HandleGameDataAsync(readerCopy, Player, toPlayer);
                     if (verified)
                     {
                         // Broadcast packet to all other players.
@@ -205,7 +205,7 @@ namespace Impostor.Server.Net
                         reader,
                         out var gameOverReason);
 
-                    await Player.Game.HandleEndGame(reader, gameOverReason);
+                    await Player!.Game.HandleEndGame(reader, gameOverReason);
                     break;
                 }
 
@@ -226,7 +226,7 @@ namespace Impostor.Server.Net
                         return;
                     }
 
-                    await Player.Game.HandleAlterGame(reader, Player, value);
+                    await Player!.Game.HandleAlterGame(reader, Player, value);
                     break;
                 }
 
@@ -242,7 +242,7 @@ namespace Impostor.Server.Net
                         out var playerId,
                         out var isBan);
 
-                    await Player.Game.HandleKickPlayer(playerId, isBan);
+                    await Player!.Game.HandleKickPlayer(playerId, isBan);
                     break;
                 }
 

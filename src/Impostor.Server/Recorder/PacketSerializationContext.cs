@@ -8,40 +8,30 @@ namespace Impostor.Server.Recorder
         private const int InitialStreamSize = 0x100;
         private const int MaximumStreamSize = 0x100000;
 
-        private MemoryStream _memory;
-        private BinaryWriter _writer;
+        private MemoryStream? _memory;
+        private BinaryWriter? _writer;
 
-        public MemoryStream Stream
+        public MemoryStream? Stream
         {
             get
             {
-                if (_memory == null)
-                {
-                    _memory = new MemoryStream(InitialStreamSize);
-                }
-
-                return _memory;
+                return _memory ??= new MemoryStream(InitialStreamSize);
             }
             private set => _memory = value;
         }
 
-        public BinaryWriter Writer
+        public BinaryWriter? Writer
         {
             get
             {
-                if (_writer == null)
-                {
-                    _writer = new BinaryWriter(Stream, Encoding.UTF8, true);
-                }
-
-                return _writer;
+                return _writer ??= new BinaryWriter(Stream!, Encoding.UTF8, true);
             }
             private set => _writer = value;
         }
 
         public void Reset()
         {
-            if (Stream.Capacity > MaximumStreamSize)
+            if (Stream == null || Stream.Capacity > MaximumStreamSize)
             {
                 Stream = null;
                 Writer = null;
