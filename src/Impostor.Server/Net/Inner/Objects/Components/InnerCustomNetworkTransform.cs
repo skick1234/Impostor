@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Numerics;
 using System.Threading.Tasks;
 using Impostor.Api;
@@ -109,18 +109,22 @@ namespace Impostor.Server.Net.Inner.Objects.Components
             return await UnregisteredCall(call, sender);
         }
 
-        internal async ValueTask SetPositionAsync(IClientPlayer sender, Vector2 position, Vector2 velocity)
+        internal async ValueTask SetPositionAsync(IClientPlayer sender, Vector2 position, Vector2 velocity, bool emitEvent = true)
         {
             Position = position;
             Velocity = velocity;
 
             var playerMovementEvent = _pool.Get();
             playerMovementEvent.Reset(_game, sender, _playerControl);
-            await _eventManager.CallAsync(playerMovementEvent);
+            if(emitEvent)
+            {
+                await _eventManager.CallAsync(playerMovementEvent);
+            }
+
             _pool.Return(playerMovementEvent);
         }
 
-        private ValueTask SnapToAsync(IClientPlayer sender, Vector2 position, ushort minSid)
+        private ValueTask SnapToAsync(IClientPlayer sender, Vector2 position, ushort minSid, bool emitEvent = true)
         {
             if (!SidGreaterThan(minSid, _lastSequenceId))
             {
@@ -128,7 +132,7 @@ namespace Impostor.Server.Net.Inner.Objects.Components
             }
 
             _lastSequenceId = minSid;
-            return SetPositionAsync(sender, position, Velocity);
+            return SetPositionAsync(sender, position, Velocity, emitEvent);
         }
     }
 }

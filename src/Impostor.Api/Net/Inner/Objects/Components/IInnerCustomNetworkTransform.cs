@@ -19,7 +19,8 @@ namespace Impostor.Api.Net.Inner.Objects.Components
         ///     Snaps the current to the given position <see cref="IInnerPlayerControl"/>.
         /// </summary>
         /// <param name="position">The target position.</param>
+        /// <param name="emitEvent">Wheter or not emit the moment event</param>
         /// <returns>Task that must be awaited.</returns>
-        ValueTask SnapToAsync(Vector2 position);
+        ValueTask SnapToAsync(Vector2 position, bool emitEvent);
     }
 }

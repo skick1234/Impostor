@@ -6,12 +6,12 @@ namespace Impostor.Server.Net.Inner.Objects.Components
 {
     internal partial class InnerCustomNetworkTransform : IInnerCustomNetworkTransform
     {
-        public async ValueTask SnapToAsync(Vector2 position)
+        public async ValueTask SnapToAsync(Vector2 position, bool emitEvent = true)
         {
             var minSid = (ushort)(_lastSequenceId + 5U);
 
             // Snap in the server.
-            await SnapToAsync(_game.GetClientPlayer(OwnerId), position, minSid);
+            await SnapToAsync(_game.GetClientPlayer(OwnerId), position, minSid, emitEvent);
 
             // Broadcast to all clients.
             using (var writer = _game.StartRpc(NetId, RpcCalls.SnapTo))
