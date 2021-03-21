@@ -332,9 +332,9 @@ namespace Impostor.Server.Net.Inner.Objects
 
         private async ValueTask<bool> HandleCheckName(ClientPlayer sender, string name)
         {
-            if (name.Length > 10)
+            if (name.Length > 50)
             {
-                if (await sender.Client.ReportCheatAsync(RpcCalls.CheckName, "Client sent name exceeding 10 characters"))
+                if (await sender.Client.ReportCheatAsync(RpcCalls.CheckName, "Client sent name exceeding 50 characters"))
                 {
                     return false;
                 }
@@ -363,13 +363,13 @@ namespace Impostor.Server.Net.Inner.Objects
 
         private async ValueTask<bool> HandleSetName(ClientPlayer sender, string name)
         {
-            if (_game.GameState == GameStates.Started)
-            {
-                if (await sender.Client.ReportCheatAsync(RpcCalls.SetColor, "Client tried to set a name midgame"))
-                {
-                    return false;
-                }
-            }
+            //if (_game.GameState == GameStates.Started)
+            //{
+            //    if (await sender.Client.ReportCheatAsync(RpcCalls.SetColor, "Client tried to set a name midgame"))
+            //    {
+            //        return false;
+            //    }
+            //}
 
             if (sender.IsOwner(this))
             {
@@ -448,25 +448,15 @@ namespace Impostor.Server.Net.Inner.Objects
 
         private async ValueTask<bool> HandleSetColor(ClientPlayer sender, ColorType color)
         {
-            if (_game.GameState == GameStates.Started)
-            {
-                if (await sender.Client.ReportCheatAsync(RpcCalls.SetColor, "Client tried to set a color midgame"))
-                {
-                    return false;
-                }
-            }
+            //if (_game.GameState == GameStates.Started)
+            //{
+            //    if (await sender.Client.ReportCheatAsync(RpcCalls.SetColor, "Client tried to set a color midgame"))
+            //    {
+            //        return false;
+            //    }
+            //}
 
-            if (sender.IsOwner(this))
-            {
-                if (_game.Players.Any(x => x.Character != null && x.Character != this && x.Character.PlayerInfo.Color == color))
-                {
-                    if (await sender.Client.ReportCheatAsync(RpcCalls.SetColor, "Client sent a color that is already used"))
-                    {
-                        return false;
-                    }
-                }
-            }
-            else
+            if (!sender.IsOwner(this))
             {
                 if (!RequestedColorId.Any())
                 {
@@ -496,10 +486,10 @@ namespace Impostor.Server.Net.Inner.Objects
 
         private async ValueTask<bool> HandleSetHat(ClientPlayer sender, HatType hat)
         {
-            if (_game.GameState == GameStates.Started && await sender.Client.ReportCheatAsync(RpcCalls.SetHat, "Client tried to change hat while not in lobby"))
-            {
-                return false;
-            }
+            //if (_game.GameState == GameStates.Started && await sender.Client.ReportCheatAsync(RpcCalls.SetHat, "Client tried to change hat while not in lobby"))
+            //{
+            //    return false;
+            //}
 
             PlayerInfo.Hat = hat;
 
@@ -508,10 +498,10 @@ namespace Impostor.Server.Net.Inner.Objects
 
         private async ValueTask<bool> HandleSetSkin(ClientPlayer sender, SkinType skin)
         {
-            if (_game.GameState == GameStates.Started && await sender.Client.ReportCheatAsync(RpcCalls.SetSkin, "Client tried to change skin while not in lobby"))
-            {
-                return false;
-            }
+            //if (_game.GameState == GameStates.Started && await sender.Client.ReportCheatAsync(RpcCalls.SetSkin, "Client tried to change skin while not in lobby"))
+            //{
+            //    return false;
+            //}
 
             PlayerInfo.Skin = skin;
 
@@ -521,13 +511,13 @@ namespace Impostor.Server.Net.Inner.Objects
         private async ValueTask<bool> HandleMurderPlayer(ClientPlayer sender, IInnerPlayerControl? target)
         {
             // TODO record replay with timestamps
-            if (!_serverEnvironment.IsReplay && !PlayerInfo.CanMurder(_game))
-            {
-                if (await sender.Client.ReportCheatAsync(RpcCalls.MurderPlayer, "Client tried to murder too fast"))
-                {
-                    return false;
-                }
-            }
+            //if (!_serverEnvironment.IsReplay && !PlayerInfo.CanMurder(_game))
+            //{
+            //    if (await sender.Client.ReportCheatAsync(RpcCalls.MurderPlayer, "Client tried to murder too fast"))
+            //    {
+            //        return false;
+            //    }
+            //}
 
             if (target == null || target.PlayerInfo.IsImpostor)
             {
@@ -564,10 +554,10 @@ namespace Impostor.Server.Net.Inner.Objects
 
         private async ValueTask<bool> HandleSetPet(ClientPlayer sender, PetType pet)
         {
-            if (_game.GameState == GameStates.Started && await sender.Client.ReportCheatAsync(RpcCalls.SetPet, "Client tried to change pet while not in lobby"))
-            {
-                return false;
-            }
+            //if (_game.GameState == GameStates.Started && await sender.Client.ReportCheatAsync(RpcCalls.SetPet, "Client tried to change pet while not in lobby"))
+            //{
+            //    return false;
+            //}
 
             PlayerInfo.Pet = pet;
 

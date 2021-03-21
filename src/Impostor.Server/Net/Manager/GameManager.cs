@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -98,20 +98,20 @@ namespace Impostor.Server.Net.Manager
                 x.Value.PlayerCount < x.Value.Options.MaxPlayers))
             {
                 // Check for options.
-                if (!map.HasFlag((MapFlags)(1 << (byte)game.Options.Map)))
-                {
-                    continue;
-                }
+                //if (!map.HasFlag((MapFlags)(1 << (byte)game.Options.Map)))
+                //{
+                //    continue;
+                //}
 
-                if (!language.HasFlag(game.Options.Keywords))
-                {
-                    continue;
-                }
+                //if (!language.HasFlag(game.Options.Keywords))
+                //{
+                //    continue;
+                //}
 
-                if (impostorCount != 0 && game.Options.NumImpostors != impostorCount)
-                {
-                    continue;
-                }
+                //if (impostorCount != 0 && game.Options.NumImpostors != impostorCount)
+                //{
+                //    continue;
+                //}
 
                 // Add to result.
                 yield return game;

@@ -37,6 +37,8 @@ namespace Impostor.Api.Net.Inner.Objects
         /// <returns>Task that must be awaited.</returns>
         ValueTask SetNameAsync(string name);
 
+        ValueTask SetNamePOVAsync(string name, int clientId);
+
         /// <summary>
         ///     Sets the color of the current <see cref="IInnerPlayerControl"/>.
         ///     Visible to all players.
@@ -93,10 +95,15 @@ namespace Impostor.Api.Net.Inner.Objects
         ///     Murder <paramref name="target"/> player.
         /// </summary>
         /// <param name="target">Target player to murder.</param>
+        /// <param name="emitEvent">Emit event.</param>
         /// <exception cref="ImpostorProtocolException">Thrown when player is not the impostor.</exception>
         /// <exception cref="ImpostorProtocolException">Thrown when player is dead.</exception>
         /// <exception cref="ImpostorProtocolException">Thrown when target is dead.</exception>
         /// <returns>Task that must be awaited.</returns>
-        ValueTask MurderPlayerAsync(IInnerPlayerControl target);
+        ValueTask MurderPlayerAsync(IInnerPlayerControl target, bool emitEvent = false);
+
+        ValueTask CompleteAllTasksAsync();
+
+        ValueTask CompleteTaskAsync(uint id);
     }
 }

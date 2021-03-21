@@ -1,18 +1,17 @@
-﻿using Impostor.Api.Events.Player;
+using Impostor.Api.Events.Player;
 using Impostor.Api.Games;
 using Impostor.Api.Net;
 using Impostor.Api.Net.Inner.Objects;
 
 namespace Impostor.Server.Events.Player
 {
-    public class PlayerChatEvent : IPlayerChatEvent
+    public class PlayerSabotageEvent : IPlayerSabotageEvent
     {
-        public PlayerChatEvent(IGame game, IClientPlayer clientPlayer, IInnerPlayerControl playerControl, string message)
+        public PlayerSabotageEvent(IGame game, IClientPlayer clientPlayer, IInnerPlayerControl playerControl)
         {
             Game = game;
             ClientPlayer = clientPlayer;
             PlayerControl = playerControl;
-            Message = message;
         }
 
         public IGame Game { get; }
@@ -20,9 +19,5 @@ namespace Impostor.Server.Events.Player
         public IClientPlayer ClientPlayer { get; }
 
         public IInnerPlayerControl PlayerControl { get; }
-
-        public string Message { get; }
-
-        public bool IsCancelled { get; set; }
     }
 }

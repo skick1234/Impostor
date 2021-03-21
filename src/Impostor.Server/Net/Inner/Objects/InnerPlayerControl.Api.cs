@@ -26,6 +26,13 @@ namespace Impostor.Server.Net.Inner.Objects
             await _game.FinishRpcAsync(writer);
         }
 
+        public async ValueTask SetNamePOVAsync(string name, int clientId)
+        {
+            using var writer = _game.StartRpc(NetId, RpcCalls.SetName, clientId);
+            writer.Write(name);
+            await _game.FinishRpcAsync(writer);
+        }
+
         public async ValueTask SetColorAsync(ColorType color)
         {
             PlayerInfo.Color = color;
@@ -81,7 +88,7 @@ namespace Impostor.Server.Net.Inner.Objects
             await _game.FinishRpcAsync(writer, player.OwnerId);
         }
 
-        public async ValueTask MurderPlayerAsync(IInnerPlayerControl target)
+        public async ValueTask MurderPlayerAsync(IInnerPlayerControl target, bool emitEvent = false)
         {
             if (!PlayerInfo.IsImpostor)
             {
@@ -104,7 +111,27 @@ namespace Impostor.Server.Net.Inner.Objects
             Rpc12MurderPlayer.Serialize(writer, target);
             await _game.FinishRpcAsync(writer);
 
-            await _eventManager.CallAsync(new PlayerMurderEvent(_game, _game.GetClientPlayer(OwnerId), this, target));
+            if (emitEvent)
+            {
+                await _eventManager.CallAsync(new PlayerMurderEvent(_game, _game.GetClientPlayer(OwnerId), this, target));
+            }
+        }
+
+        public async ValueTask CompleteAllTasksAsync()
+        {
+            foreach (var task in PlayerInfo.Tasks)
+            {
+                using var writer = _game.StartRpc(NetId, RpcCalls.CompleteTask);
+                writer.WritePacked(task.Id);
+                await _game.FinishRpcAsync(writer);
+            }
+        }
+
+        public async ValueTask CompleteTaskAsync(uint id)
+        {
+            using var writer = _game.StartRpc(NetId, RpcCalls.CompleteTask);
+            writer.WritePacked(id);
+            await _game.FinishRpcAsync(writer);
         }
     }
 }
