@@ -7,30 +7,30 @@ namespace Impostor.Api.Net.Inner.Objects
     public interface IInnerPlayerControl : IInnerNetObject
     {
         /// <summary>
-        ///     Gets the <see cref="PlayerId"/> assigned by the client of the host of the game.
+        ///     Gets the <see cref="PlayerId" /> assigned by the client of the host of the game.
         /// </summary>
         byte PlayerId { get; }
 
         /// <summary>
-        ///     Gets the <see cref="IInnerPlayerPhysics"/> of the <see cref="IInnerPlayerControl"/>.
+        ///     Gets the <see cref="IInnerPlayerPhysics" /> of the <see cref="IInnerPlayerControl" />.
         ///     Contains vent logic.
         /// </summary>
         IInnerPlayerPhysics Physics { get; }
 
         /// <summary>
-        ///     Gets the <see cref="IInnerCustomNetworkTransform"/> of the <see cref="IInnerPlayerControl"/>.
+        ///     Gets the <see cref="IInnerCustomNetworkTransform" /> of the <see cref="IInnerPlayerControl" />.
         ///     Contains position data about the player.
         /// </summary>
         IInnerCustomNetworkTransform NetworkTransform { get; }
 
         /// <summary>
-        ///     Gets the <see cref="IInnerPlayerInfo"/> of the <see cref="IInnerPlayerControl"/>.
+        ///     Gets the <see cref="IInnerPlayerInfo" /> of the <see cref="IInnerPlayerControl" />.
         ///     Contains metadata about the player.
         /// </summary>
         IInnerPlayerInfo PlayerInfo { get; }
 
         /// <summary>
-        ///     Sets the name of the current <see cref="IInnerPlayerControl"/>.
+        ///     Sets the name of the current <see cref="IInnerPlayerControl" />.
         ///     Visible to all players.
         /// </summary>
         /// <param name="name">A name for the player.</param>
@@ -40,7 +40,7 @@ namespace Impostor.Api.Net.Inner.Objects
         ValueTask SetNamePOVAsync(string name, int clientId);
 
         /// <summary>
-        ///     Sets the color of the current <see cref="IInnerPlayerControl"/>.
+        ///     Sets the color of the current <see cref="IInnerPlayerControl" />.
         ///     Visible to all players.
         /// </summary>
         /// <param name="colorType">A color for the player.</param>
@@ -48,7 +48,7 @@ namespace Impostor.Api.Net.Inner.Objects
         ValueTask SetColorAsync(ColorType colorType);
 
         /// <summary>
-        ///     Sets the hat of the current <see cref="IInnerPlayerControl"/>.
+        ///     Sets the hat of the current <see cref="IInnerPlayerControl" />.
         ///     Visible to all players.
         /// </summary>
         /// <param name="hatType">An hat for the player.</param>
@@ -56,7 +56,7 @@ namespace Impostor.Api.Net.Inner.Objects
         ValueTask SetHatAsync(HatType hatType);
 
         /// <summary>
-        ///     Sets the pet of the current <see cref="IInnerPlayerControl"/>.
+        ///     Sets the pet of the current <see cref="IInnerPlayerControl" />.
         ///     Visible to all players.
         /// </summary>
         /// <param name="petType">A pet for the player.</param>
@@ -64,7 +64,7 @@ namespace Impostor.Api.Net.Inner.Objects
         ValueTask SetPetAsync(PetType petType);
 
         /// <summary>
-        ///     Sets the skin of the current <see cref="IInnerPlayerControl"/>.
+        ///     Sets the skin of the current <see cref="IInnerPlayerControl" />.
         ///     Visible to all players.
         /// </summary>
         /// <param name="skinType">A skin for the player.</param>
@@ -72,7 +72,7 @@ namespace Impostor.Api.Net.Inner.Objects
         ValueTask SetSkinAsync(SkinType skinType);
 
         /// <summary>
-        ///     Send a chat message as the current <see cref="IInnerPlayerControl"/>.
+        ///     Send a chat message as the current <see cref="IInnerPlayerControl" />.
         ///     Visible to all players.
         /// </summary>
         /// <param name="text">The message to send.</param>
@@ -80,7 +80,7 @@ namespace Impostor.Api.Net.Inner.Objects
         ValueTask SendChatAsync(string text);
 
         /// <summary>
-        ///     Send a chat message as the current <see cref="IInnerPlayerControl"/>.
+        ///     Send a chat message as the current <see cref="IInnerPlayerControl" />.
         ///     Visible to only the current.
         /// </summary>
         /// <param name="text">The message to send.</param>
@@ -92,7 +92,7 @@ namespace Impostor.Api.Net.Inner.Objects
         ValueTask SendChatToPlayerAsync(string text, IInnerPlayerControl? player = null);
 
         /// <summary>
-        ///     Murder <paramref name="target"/> player.
+        ///     Murder <paramref name="target" /> player.
         /// </summary>
         /// <param name="target">Target player to murder.</param>
         /// <param name="emitEvent">Emit event.</param>
@@ -105,5 +105,12 @@ namespace Impostor.Api.Net.Inner.Objects
         ValueTask CompleteAllTasksAsync();
 
         ValueTask CompleteTaskAsync(uint id);
+
+        /// <summary>
+        ///     Exile the current player. This doesn't produce a body to be reported.
+        ///     Visible to all players.
+        /// </summary>
+        /// <returns>Task that must be awaited.</returns>
+        ValueTask ExileAsync();
     }
 }
