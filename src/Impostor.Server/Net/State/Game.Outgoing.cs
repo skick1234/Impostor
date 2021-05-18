@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Impostor.Api.Innersloth;
 using Impostor.Api.Net;
+using Impostor.Api.Net.Inner;
 using Impostor.Api.Net.Messages;
 using Impostor.Api.Net.Messages.S2C;
 using Impostor.Hazel;
@@ -37,11 +38,11 @@ namespace Impostor.Server.Net.State
             }
         }
 
-        internal IMessageWriter StartRpc(uint targetNetId, RpcCalls callId, int targetClientId = -1, MessageType type = MessageType.Reliable)
+        public IMessageWriter StartRpc(uint targetNetId, RpcCalls callId, int? targetClientId = null, MessageType type = MessageType.Reliable)
         {
             var writer = MessageWriter.Get(type);
 
-            if (targetClientId < 0)
+            if (targetClientId == null || targetClientId < 0)
             {
                 writer.StartMessage(MessageFlags.GameData);
                 writer.Write(Code);
@@ -50,7 +51,7 @@ namespace Impostor.Server.Net.State
             {
                 writer.StartMessage(MessageFlags.GameDataTo);
                 writer.Write(Code);
-                writer.WritePacked(targetClientId);
+                writer.WritePacked(targetClientId.Value);
             }
 
             writer.StartMessage(GameDataTag.RpcFlag);
@@ -60,7 +61,7 @@ namespace Impostor.Server.Net.State
             return writer;
         }
 
-        internal ValueTask FinishRpcAsync(IMessageWriter writer, int? targetClientId = null)
+        public ValueTask FinishRpcAsync(IMessageWriter writer, int? targetClientId = null)
         {
             writer.EndMessage();
             writer.EndMessage();

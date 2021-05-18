@@ -1,16 +1,18 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using Impostor.Api;
 using Impostor.Api.Events.Managers;
 using Impostor.Api.Games;
 using Impostor.Api.Games.Managers;
+using Impostor.Api.Net.Custom;
 using Impostor.Api.Net.Manager;
 using Impostor.Api.Net.Messages;
+using Impostor.Api.Utils;
 using Impostor.Hazel.Extensions;
 using Impostor.Server.Config;
 using Impostor.Server.Events;
 using Impostor.Server.Net;
+using Impostor.Server.Net.Custom;
 using Impostor.Server.Net.Factories;
 using Impostor.Server.Net.Manager;
 using Impostor.Server.Net.Messages;
@@ -59,7 +61,7 @@ namespace Impostor.Server
 
             try
             {
-                Log.Information("Starting Impostor v{0}", DotnetUtils.GetVersion());
+                Log.Information("Starting Impostor v{0}", DotnetUtils.Version);
                 CreateHostBuilder(args).Build().Run();
                 return 0;
             }
@@ -78,6 +80,7 @@ namespace Impostor.Server
         {
             var configurationBuilder = new ConfigurationBuilder();
 
+            configurationBuilder.SetBasePath(Directory.GetCurrentDirectory());
             configurationBuilder.AddJsonFile("config.json", true);
             configurationBuilder.AddJsonFile("config.Development.json", true);
             configurationBuilder.AddEnvironmentVariables(prefix: "IMPOSTOR_");
@@ -117,13 +120,19 @@ namespace Impostor.Server
                         .GetSection(AnnouncementsServerConfig.Section)
                         .Get<AnnouncementsServerConfig>() ?? new AnnouncementsServerConfig();
 
+                    var authServer = host.Configuration
+                        .GetSection(AuthServerConfig.Section)
+                        .Get<AuthServerConfig>() ?? new AuthServerConfig();
+
                     services.AddSingleton<ServerEnvironment>();
+                    services.AddSingleton<IServerEnvironment>(p => p.GetRequiredService<ServerEnvironment>());
                     services.AddSingleton<IDateTimeProvider, RealDateTimeProvider>();
 
                     services.Configure<DebugConfig>(host.Configuration.GetSection(DebugConfig.Section));
                     services.Configure<AntiCheatConfig>(host.Configuration.GetSection(AntiCheatConfig.Section));
                     services.Configure<ServerConfig>(host.Configuration.GetSection(ServerConfig.Section));
                     services.Configure<AnnouncementsServerConfig>(host.Configuration.GetSection(AnnouncementsServerConfig.Section));
+                    services.Configure<AuthServerConfig>(host.Configuration.GetSection(AuthServerConfig.Section));
                     services.Configure<ServerRedirectorConfig>(host.Configuration.GetSection(ServerRedirectorConfig.Section));
 
                     if (redirector.Enabled)
@@ -202,6 +211,8 @@ namespace Impostor.Server
 
                     services.AddEventPools();
                     services.AddHazel();
+                    services.AddSingleton<ICustomMessageManager<ICustomRootMessage>, CustomMessageManager<ICustomRootMessage>>();
+                    services.AddSingleton<ICustomMessageManager<ICustomRpc>, CustomMessageManager<ICustomRpc>>();
                     services.AddSingleton<IMessageWriterProvider, MessageWriterProvider>();
                     services.AddSingleton<IGameCodeFactory, GameCodeFactory>();
                     services.AddSingleton<IEventManager, EventManager>();
@@ -211,6 +222,11 @@ namespace Impostor.Server
                     if (announcementsServer.Enabled)
                     {
                         services.AddHostedService<AnnouncementsService>();
+                    }
+
+                    if (authServer.Enabled)
+                    {
+                        services.AddHostedService<AuthService>();
                     }
                 })
                 .UseSerilog()

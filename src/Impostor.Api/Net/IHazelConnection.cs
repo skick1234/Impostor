@@ -25,6 +25,11 @@ namespace Impostor.Api.Net
         IClient? Client { get; set; }
 
         /// <summary>
+        ///     Gets the average ping of the client.
+        /// </summary>
+        float AveragePing { get; }
+
+        /// <summary>
         ///     Sends a message writer to the connection.
         /// </summary>
         /// <param name="writer">The message.</param>
@@ -35,7 +40,8 @@ namespace Impostor.Api.Net
         ///     Disconnects the client and invokes the disconnect handler.
         /// </summary>
         /// <param name="reason">A reason.</param>
+        /// <param name="writer">A message to send with disconnect packet.</param>
         /// <returns>Task that must be awaited.</returns>
-        ValueTask DisconnectAsync(string? reason);
+        ValueTask DisconnectAsync(string? reason, IMessageWriter? writer = null);
     }
 }

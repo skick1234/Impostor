@@ -1,5 +1,7 @@
 ﻿using System.Threading.Tasks;
+using Impostor.Api.Games;
 using Impostor.Api.Net;
+using Impostor.Api.Net.Custom;
 using Impostor.Api.Net.Inner;
 using Impostor.Api.Net.Messages;
 using Impostor.Server.Net.State;
@@ -10,9 +12,21 @@ namespace Impostor.Server.Net.Inner
     {
         private const int HostInheritId = -2;
 
+        private readonly ICustomMessageManager<ICustomRpc> _customMessageManager;
+
+        protected InnerNetObject(ICustomMessageManager<ICustomRpc> customMessageManager, Game game)
+        {
+            _customMessageManager = customMessageManager;
+            Game = game;
+        }
+
         public uint NetId { get; internal set; }
 
         public int OwnerId { get; internal set; }
+
+        public Game Game { get; }
+
+        IGame IInnerNetObject.Game => Game;
 
         public SpawnFlags SpawnFlags { get; internal set; }
 
@@ -26,20 +40,24 @@ namespace Impostor.Server.Net.Inner
 
         public abstract ValueTask DeserializeAsync(IClientPlayer sender, IClientPlayer? target, IMessageReader reader, bool initialState);
 
-        public abstract ValueTask<bool> HandleRpcAsync(ClientPlayer sender, ClientPlayer? target, RpcCalls call, IMessageReader reader);
-
-        // TODO move to Reactor.Impostor plugin
-        protected ValueTask<bool> HandleCustomRpc(IMessageReader reader, Game game)
+        public virtual async ValueTask<bool> HandleRpcAsync(ClientPlayer sender, ClientPlayer? target, RpcCalls call, IMessageReader reader)
         {
-            var lengthOrShortId = reader.ReadPackedInt32();
+            return await HandleCustomRpcAsync(sender, target, call, reader) ?? await UnregisteredCall(call, sender);
+        }
 
-            var pluginId = lengthOrShortId < 0
-                ? game.Host!.Client.ModIdMap[lengthOrShortId]
-                : reader.ReadString(lengthOrShortId);
+        protected async ValueTask<bool?> HandleCustomRpcAsync(ClientPlayer sender, ClientPlayer? target, RpcCalls call, IMessageReader reader)
+        {
+            if (_customMessageManager.TryGet((byte)call, out var customRpc))
+            {
+                return await customRpc.HandleRpcAsync(this, sender, target, reader);
+            }
 
-            var id = reader.ReadPackedInt32();
+            return null;
+        }
 
-            return ValueTask.FromResult(true);
+        internal virtual ValueTask OnSpawnAsync()
+        {
+            return default;
         }
     }
 }
