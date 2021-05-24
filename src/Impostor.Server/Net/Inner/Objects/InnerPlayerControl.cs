@@ -375,31 +375,31 @@ namespace Impostor.Server.Net.Inner.Objects
 
         private async ValueTask<bool> HandleSetName(ClientPlayer sender, string name)
         {
-            //if (Game.GameState == GameStates.Started)
-            //{
-            //    if (await sender.Client.ReportCheatAsync(RpcCalls.SetColor, "Client tried to set a name midgame"))
-            //    {
-            //        return false;
-            //    }
-            //}
+            if (Game.GameState == GameStates.Started)
+            {
+                if (await sender.Client.ReportCheatAsync(RpcCalls.SetColor, "Client tried to set a name midgame"))
+                {
+                    return false;
+                }
+            }
 
             if (sender.IsOwner(this))
             {
-                //if (Game.Players.Any(x => x.Character != null && x.Character != this && x.Character.PlayerInfo.PlayerName == name))
-                //{
-                //    if (await sender.Client.ReportCheatAsync(RpcCalls.SetName, "Client sent name that is already used"))
-                //    {
-                //        return false;
-                //    }
-                //}
+                if (Game.Players.Any(x => x.Character != null && x.Character != this && x.Character.PlayerInfo.PlayerName == name))
+                {
+                    if (await sender.Client.ReportCheatAsync(RpcCalls.SetName, "Client sent name that is already used"))
+                    {
+                        return false;
+                    }
+                }
 
-                //if (sender.Client.Name != name)
-                //{
-                //    if (await sender.Client.ReportCheatAsync(RpcCalls.SetName, "Client sent name not matching his name from handshake"))
-                //    {
-                //        return false;
-                //    }
-                //}
+                if (sender.Client.Name != name)
+                {
+                    if (await sender.Client.ReportCheatAsync(RpcCalls.SetName, "Client sent name not matching his name from handshake"))
+                    {
+                        return false;
+                    }
+                }
             }
             else
             {
@@ -458,23 +458,23 @@ namespace Impostor.Server.Net.Inner.Objects
 
         private async ValueTask<bool> HandleSetColor(ClientPlayer sender, ColorType color)
         {
-            //if (Game.GameState == GameStates.Started)
-            //{
-            //    if (await sender.Client.ReportCheatAsync(RpcCalls.SetColor, "Client tried to set a color midgame"))
-            //    {
-            //        return false;
-            //    }
-            //}
+            if (Game.GameState == GameStates.Started)
+            {
+                if (await sender.Client.ReportCheatAsync(RpcCalls.SetColor, "Client tried to set a color midgame"))
+                {
+                    return false;
+                }
+            }
 
             if (sender.IsOwner(this))
             {
-                //if (Game.Players.Any(x => x.Character != null && x.Character != this && x.Character.PlayerInfo.Color == color))
-                //{
-                //    if (await sender.Client.ReportCheatAsync(RpcCalls.SetColor, "Client sent a color that is already used"))
-                //    {
-                //        return false;
-                //    }
-                //}
+                if (Game.Players.Any(x => x.Character != null && x.Character != this && x.Character.PlayerInfo.Color == color))
+                {
+                    if (await sender.Client.ReportCheatAsync(RpcCalls.SetColor, "Client sent a color that is already used"))
+                    {
+                        return false;
+                    }
+                }
             }
             else
             {
@@ -506,10 +506,10 @@ namespace Impostor.Server.Net.Inner.Objects
 
         private async ValueTask<bool> HandleSetHat(ClientPlayer sender, HatType hat)
         {
-            //if (Game.GameState == GameStates.Started && await sender.Client.ReportCheatAsync(RpcCalls.SetHat, "Client tried to change hat while not in lobby"))
-            //{
-            //    return false;
-            //}
+            if (Game.GameState == GameStates.Started && await sender.Client.ReportCheatAsync(RpcCalls.SetHat, "Client tried to change hat while not in lobby"))
+            {
+                return false;
+            }
 
             PlayerInfo.Hat = hat;
 
@@ -518,10 +518,10 @@ namespace Impostor.Server.Net.Inner.Objects
 
         private async ValueTask<bool> HandleSetSkin(ClientPlayer sender, SkinType skin)
         {
-            //if (Game.GameState == GameStates.Started && await sender.Client.ReportCheatAsync(RpcCalls.SetSkin, "Client tried to change skin while not in lobby"))
-            //{
-            //    return false;
-            //}
+            if (Game.GameState == GameStates.Started && await sender.Client.ReportCheatAsync(RpcCalls.SetSkin, "Client tried to change skin while not in lobby"))
+            {
+                return false;
+            }
 
             PlayerInfo.Skin = skin;
 
@@ -546,7 +546,7 @@ namespace Impostor.Server.Net.Inner.Objects
                 }
             }
 
-            PlayerInfo.LastMurder = _dateTimeProvider.UtcNow - TimeSpan.FromMilliseconds(sender.Client.Connection.AveragePing);
+            PlayerInfo.LastMurder = _dateTimeProvider.UtcNow - (TimeSpan.FromMilliseconds(sender.Client.Connection.AveragePing) * 2);
 
             if (target != null && !target.PlayerInfo.IsDead)
             {
@@ -573,10 +573,10 @@ namespace Impostor.Server.Net.Inner.Objects
 
         private async ValueTask<bool> HandleSetPet(ClientPlayer sender, PetType pet)
         {
-            //if (Game.GameState == GameStates.Started && await sender.Client.ReportCheatAsync(RpcCalls.SetPet, "Client tried to change pet while not in lobby"))
-            //{
-            //    return false;
-            //}
+            if (Game.GameState == GameStates.Started && await sender.Client.ReportCheatAsync(RpcCalls.SetPet, "Client tried to change pet while not in lobby"))
+            {
+                return false;
+            }
 
             PlayerInfo.Pet = pet;
 
